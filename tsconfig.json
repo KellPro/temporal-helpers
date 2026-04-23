@@ -1,0 +1,17 @@
+{
+  "include": ["./**/*.ts"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "tsBuildInfoFile": ".tsbuildinfo"
+  }
+}

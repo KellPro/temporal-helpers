@@ -1,0 +1,35 @@
+{
+  "name": "temporal-helpers",
+  "version": "0.0.1",
+  "description": "date-fns-like utility functions for Temporal.ZonedDateTime",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./differenceInSeconds": {
+      "types": "./differenceInSeconds.d.ts",
+      "default": "./differenceInSeconds.js"
+    },
+    "./differenceInMinutes": {
+      "types": "./differenceInMinutes.d.ts",
+      "default": "./differenceInMinutes.js"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}
