@@ -1,0 +1,16 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/test.ts", "src/**/*.test.ts", "node_modules", "dist"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "rootDir": "src",
+    "strict": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -57,7 +57,7 @@ When porting:
 | `intlFormatDistance` | Calendar unit pick (date-fns-like thresholds) |
 | `formatRFC7231` | Always UTC GMT |
 | `formatRFC3339` | ZDT offset; `+00:00` → `Z` |
-| Packaging | No assumed JS build yet; tests run TS via Vitest |
+| Packaging | Dual build: `npm run build` → `dist/esm` + `dist/cjs`; tests run TS via Vitest |
 
 ## Adding a function (checklist)
 
@@ -84,11 +84,24 @@ When porting:
 - Barrel export present.
 - No leftover debug logs; no unused code.
 
+## Build
+
+```bash
+npm run build        # tsc ESM + tsc CJS + dist/cjs/package.json
+npm run clean
+```
+
+- ESM: `tsconfig.esm.json` → `dist/esm/` (NodeNext, keeps `.js` import specifiers)
+- CJS: `tsconfig.cjs.json` → `dist/cjs/` + `scripts/write-cjs-package-json.js`
+- Root `tsconfig.json` is `noEmit` for editor/typecheck
+- Do not hand-edit `dist/`; rebuild after source changes when verifying require/import
+- `dist/` is gitignored
+- `prepare` → `npm run build` so git/file installs (e.g. Keli) get ESM+CJS without a manual build step
+
 ## Out of scope unless tasked
 
-- Emitting/bundling `index.js` for publish
-- CJS dual package
 - PlainDate / PlainTime APIs
 - date-fns `parse` token engine
 - Full locale / `fp` trees
 - `getDefaultOptions` / `setDefaultOptions` without call-site demand
+- Per-function deep `exports` map (barrel `"."` only unless asked)

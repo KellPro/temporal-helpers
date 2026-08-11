@@ -10,7 +10,7 @@ Built for Keli’s dual-path DateAPI: the same helper names as date-fns, but arg
 - **Keli P0/P1:** complete (`formatDistance*`, `add`/`sub` duration entry, `formatRFC3339`).
 - **Keli P2 easy wins:** complete (`formatRelative`, `formatISO9075`, `formatRFC7231`, `intlFormat*`, `set`, `interval`, `lightFormat`, `toLegacyDate`).
 - **Not goals (yet):** full date-fns locale packs, `fp/`, date-fns `parse`, Date-subclass glue (`constructFrom` / `transpose`), PlainDate/PlainTime APIs.
-- **Packaging:** TypeScript sources + Vitest. `package.json` still points at built `index.js` / `.d.ts` that are not produced by the current `emitDeclarationOnly` setup. A real JS build is required before git/npm consumption from Keli.
+- **Packaging:** Dual package — ESM under `dist/esm/`, CJS under `dist/cjs/`. Run `npm run build` before publish or git-dep use.
 
 Upstream tracking and remaining work live in the parent workspace file `../REMAINING_FUNCTIONS.md` (when this repo sits next to that file) or the monorepo copy of that document.
 
@@ -19,16 +19,19 @@ Upstream tracking and remaining work live in the parent workspace file `../REMAI
 ```bash
 npm install
 npm test
+npm run build        # dist/esm + dist/cjs
 npm run test:watch
 ```
 
 Dependency: `@js-temporal/polyfill`.
 
-Import paths in source use `.js` extensions (NodeNext). Tests import from `./index.js` or `../index.js`.
-
 ```ts
+// ESM
 import { Temporal } from "@js-temporal/polyfill";
 import { addDays, formatDistanceToNowStrict, formatRFC3339 } from "temporal-helpers";
+
+// CJS
+// const { addDays } = require("temporal-helpers");
 
 const zdt = Temporal.ZonedDateTime.from("2024-07-10T12:00:00[Europe/Paris]");
 addDays(zdt, 5);
@@ -36,7 +39,15 @@ formatDistanceToNowStrict(zdt, { addSuffix: true });
 formatRFC3339(zdt);
 ```
 
-Until a build exists, consumers should resolve TypeScript sources (or add a build step). Do not assume published `index.js` is present.
+| Field | Path |
+|--------|------|
+| `main` (require) | `dist/cjs/index.js` |
+| `module` / `import` | `dist/esm/index.js` |
+| `types` | `dist/esm/index.d.ts` |
+
+`dist/cjs/package.json` sets `"type": "commonjs"` so Node treats the CJS tree correctly while the package root stays `"type": "module"`.
+
+`prepare` runs `npm run build`, so `dist/` is produced on `npm install` (including git dependencies for Keli). TypeScript must be installable as a devDependency of this package for that to succeed.
 
 ## Layout
 
