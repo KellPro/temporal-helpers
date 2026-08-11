@@ -117,6 +117,43 @@ export { isSunday } from "./isSunday/index.js";
 export { format } from "./format/index.js";
 export { formatISO } from "./formatISO/index.js";
 export type { FormatISOOptions } from "./formatISO/index.js";
+export { formatDistance } from "./formatDistance/index.js";
+export type { FormatDistanceOptions } from "./formatDistance/index.js";
+export { formatDistanceStrict } from "./formatDistanceStrict/index.js";
+export type {
+  FormatDistanceStrictOptions,
+  FormatDistanceStrictUnit,
+} from "./formatDistanceStrict/index.js";
+export { formatDistanceToNow } from "./formatDistanceToNow/index.js";
+export type { FormatDistanceToNowOptions } from "./formatDistanceToNow/index.js";
+export { formatDistanceToNowStrict } from "./formatDistanceToNowStrict/index.js";
+export type { FormatDistanceToNowStrictOptions } from "./formatDistanceToNowStrict/index.js";
+export { formatRFC3339 } from "./formatRFC3339/index.js";
+export type { FormatRFC3339Options } from "./formatRFC3339/index.js";
+export { formatISO9075 } from "./formatISO9075/index.js";
+export type { FormatISO9075Options } from "./formatISO9075/index.js";
+export { formatRFC7231 } from "./formatRFC7231/index.js";
+export { lightFormat } from "./lightFormat/index.js";
+export { formatRelative } from "./formatRelative/index.js";
+export type { FormatRelativeOptions } from "./formatRelative/index.js";
+export { intlFormat } from "./intlFormat/index.js";
+export type {
+  IntlFormatFormatOptions,
+  IntlFormatLocaleOptions,
+} from "./intlFormat/index.js";
+export { intlFormatDistance } from "./intlFormatDistance/index.js";
+export type {
+  IntlFormatDistanceOptions,
+  IntlFormatDistanceUnit,
+} from "./intlFormatDistance/index.js";
+
+export { add } from "./add/index.js";
+export { sub } from "./sub/index.js";
+export { set } from "./set/index.js";
+export type { SetValues } from "./set/index.js";
+export { interval } from "./interval/index.js";
+export type { Interval as DateInterval } from "./interval/index.js";
+export { toLegacyDate } from "./toLegacyDate/index.js";
 
 export { parseISO } from "./parseISO/index.js";
 export { parseJSON } from "./parseJSON/index.js";
