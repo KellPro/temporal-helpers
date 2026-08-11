@@ -58,6 +58,7 @@ When porting:
 | `formatRFC7231` | Always UTC GMT |
 | `formatRFC3339` | ZDT offset; `+00:00` → `Z` |
 | Packaging | Dual build: `npm run build` → `dist/esm` + `dist/cjs`; tests run TS via Vitest |
+| Polyfill | `@js-temporal/polyfill` `^0.5.1` (aligned with Keli). No `epochSeconds` / `fromEpochSeconds` / `toZonedDateTime({…})` / `getTimeZone()` — use `epochMilliseconds`, `fromEpochMilliseconds`, `toZonedDateTimeISO`, `timeZoneId` |
 
 ## Adding a function (checklist)
 

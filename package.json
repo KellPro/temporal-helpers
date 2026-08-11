@@ -37,7 +37,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm test"
   },
   "dependencies": {
-    "@js-temporal/polyfill": "^0.4.4"
+    "@js-temporal/polyfill": "^0.5.1"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

@@ -8,6 +8,6 @@ export interface IsThisWeekOptions {
 }
 
 export function isThisWeek(date: ZonedDateTime, options?: IsThisWeekOptions, referenceDate?: ZonedDateTime): boolean {
-  const ref = referenceDate ?? Temporal.Now.zonedDateTimeISO(date.getTimeZone().id);
+  const ref = referenceDate ?? Temporal.Now.zonedDateTimeISO(date.timeZoneId);
   return isSameWeek(date, ref, options);
 }

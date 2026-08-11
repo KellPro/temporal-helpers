@@ -23,7 +23,7 @@ npm run build        # dist/esm + dist/cjs
 npm run test:watch
 ```
 
-Dependency: `@js-temporal/polyfill`.
+Dependency: `@js-temporal/polyfill` `^0.5.1` (same major line as Keli).
 
 ```ts
 // ESM

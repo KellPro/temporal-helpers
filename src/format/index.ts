@@ -29,7 +29,7 @@ const tokens: FormatToken[] = [
   { char: "A", fn: (d) => (d.hour >= 12 ? "PM" : "AM") },
   { char: "a", fn: (d) => (d.hour >= 12 ? "pm" : "am") },
   { char: "ZZ", fn: (d) => d.toString().split("[")[1]?.replace("]", "") || "" },
-  { char: "X", fn: (d) => String(Math.floor(d.epochSeconds)) },
+  { char: "X", fn: (d) => String(Math.floor(d.epochMilliseconds / 1000)) },
 ];
 
 function escapeString(str: string): string {

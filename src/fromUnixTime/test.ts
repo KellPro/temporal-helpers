@@ -4,7 +4,7 @@ import { fromUnixTime } from "../index.js";
 describe("fromUnixTime", () => {
   it("converts unix time to ZonedDateTime", () => {
     const result = fromUnixTime(0);
-    expect(result.epochSeconds).toBe(0);
+    expect(Math.floor(result.epochMilliseconds / 1000)).toBe(0);
   });
 
   it("handles positive unix time", () => {

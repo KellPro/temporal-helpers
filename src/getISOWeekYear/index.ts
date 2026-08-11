@@ -11,7 +11,7 @@ function getFirstThursdayOfYear(year: number, timeZone: string): Temporal.ZonedD
 
 export function getISOWeekYear(date: ZonedDateTime): number {
   const year = date.year;
-  const timeZone = date.getTimeZone().id;
+  const timeZone = date.timeZoneId;
   
   const jan1 = Temporal.ZonedDateTime.from(`${year}-01-01T00:00:00[${timeZone}]`);
   const dayOfWeek = jan1.dayOfWeek;
@@ -25,7 +25,7 @@ export function getISOWeekYear(date: ZonedDateTime): number {
 
 export function getISOWeek(date: ZonedDateTime): number {
   const isoWeekYear = getISOWeekYear(date);
-  const timeZone = date.getTimeZone().id;
+  const timeZone = date.timeZoneId;
   
   const firstThursday = getFirstThursdayOfYear(isoWeekYear, timeZone);
   const firstMonday = firstThursday.add({ days: -3 });
