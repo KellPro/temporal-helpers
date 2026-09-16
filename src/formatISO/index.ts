@@ -30,5 +30,7 @@ export function formatISO(date: ZonedDateTime, options?: FormatISOOptions): stri
   const dateStr = `${year}${separator}${month}${separator}${day}`;
   const timeStr = `${hour}${timeSeparator}${minute}${timeSeparator}${second}${ms}`;
   
-  return `${dateStr}T${timeStr}${date.toString().slice(-6)}`;
+  const offset = date.offset === "+00:00" ? "Z" : date.offset;
+
+  return `${dateStr}T${timeStr}${offset}`;
 }

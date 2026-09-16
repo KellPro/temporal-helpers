@@ -7,19 +7,27 @@ const { ZonedDateTime } = Temporal;
 describe("formatISO", () => {
   const date = ZonedDateTime.from("2024-07-10T14:30:45.123[Europe/Paris]");
 
-  it("formats date as ISO string", () => {
-    const result = formatISO(date);
-    expect(result).toContain("2024-07-10");
-    expect(result).toContain("14:30:45");
+  it("formats date as ISO string with offset", () => {
+    expect(formatISO(date)).toBe("2024-07-10T14:30:45+02:00");
   });
 
   it("supports basic format", () => {
-    const result = formatISO(date, { format: "basic" });
-    expect(result).toContain("20240710");
+    expect(formatISO(date, { format: "basic" })).toBe("20240710T143045+02:00");
   });
 
   it("supports fractional second digits", () => {
-    const result = formatISO(date, { fractionalSecondDigits: 3 });
-    expect(result).toContain(".123");
+    expect(formatISO(date, { fractionalSecondDigits: 3 })).toBe(
+      "2024-07-10T14:30:45.123+02:00",
+    );
+  });
+
+  it("uses Z for UTC offset", () => {
+    const utc = ZonedDateTime.from("2024-07-10T12:00:00[UTC]");
+    expect(formatISO(utc)).toBe("2024-07-10T12:00:00Z");
+  });
+
+  it("formats other zones with their offset", () => {
+    const chicago = ZonedDateTime.from("2024-07-10T07:00:00[America/Chicago]");
+    expect(formatISO(chicago)).toBe("2024-07-10T07:00:00-05:00");
   });
 });
