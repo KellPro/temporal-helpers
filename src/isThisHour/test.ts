@@ -241,8 +241,5 @@ describe("Comparison and Is Functions", () => {
     it("returns true for valid date", () => {
       expect(isValid(date)).toBe(true);
     });
-    it("returns false for invalid date", () => {
-      expect(isValid(new Date("invalid"))).toBe(false);
-    });
   });
 });

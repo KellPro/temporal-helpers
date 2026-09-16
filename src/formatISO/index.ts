@@ -4,33 +4,49 @@ type ZonedDateTime = Temporal.ZonedDateTime;
 
 export interface FormatISOOptions {
   format?: "extended" | "basic";
-  fractionalSecondDigits?: number;
+  representation?: "complete" | "date" | "time";
+  fractionDigits?: 0 | 1 | 2 | 3;
 }
 
 export function formatISO(date: ZonedDateTime, options?: FormatISOOptions): string {
   const format = options?.format ?? "extended";
-  const fractionalDigits = options?.fractionalSecondDigits ?? 0;
-  
-  const year = String(date.year).padStart(4, "0");
-  const month = String(date.month).padStart(2, "0");
-  const day = String(date.day).padStart(2, "0");
-  const hour = String(date.hour).padStart(2, "0");
-  const minute = String(date.minute).padStart(2, "0");
-  const second = String(date.second).padStart(2, "0");
-  
-  let ms = "";
-  if (fractionalDigits > 0) {
-    const msStr = String(date.millisecond).padStart(3, "0").slice(0, fractionalDigits);
-    ms = "." + msStr;
-  }
-  
-  const separator = format === "basic" ? "" : "-";
-  const timeSeparator = format === "basic" ? "" : ":";
-  
-  const dateStr = `${year}${separator}${month}${separator}${day}`;
-  const timeStr = `${hour}${timeSeparator}${minute}${timeSeparator}${second}${ms}`;
-  
-  const offset = date.offset === "+00:00" ? "Z" : date.offset;
+  const representation = options?.representation ?? "complete";
+  const fractionDigits = options?.fractionDigits ?? 0;
 
-  return `${dateStr}T${timeStr}${offset}`;
+  const dateDelimiter = format === "basic" ? "" : "-";
+  const timeDelimiter = format === "basic" ? "" : ":";
+
+  let result = "";
+
+  if (representation !== "time") {
+    const year = String(date.year).padStart(4, "0");
+    const month = String(date.month).padStart(2, "0");
+    const day = String(date.day).padStart(2, "0");
+
+    result = `${year}${dateDelimiter}${month}${dateDelimiter}${day}`;
+  }
+
+  if (representation !== "date") {
+    const hour = String(date.hour).padStart(2, "0");
+    const minute = String(date.minute).padStart(2, "0");
+    const second = String(date.second).padStart(2, "0");
+
+    let fractionalSecond = "";
+    if (fractionDigits > 0) {
+      fractionalSecond =
+        "." + String(date.millisecond).padStart(3, "0").slice(0, fractionDigits);
+    }
+
+    let offset = date.offset;
+    if (offset === "+00:00" || offset === "-00:00") {
+      offset = "Z";
+    }
+
+    const separator = result === "" ? "" : "T";
+    const time = `${hour}${timeDelimiter}${minute}${timeDelimiter}${second}${fractionalSecond}`;
+
+    result = `${result}${separator}${time}${offset}`;
+  }
+
+  return result;
 }
