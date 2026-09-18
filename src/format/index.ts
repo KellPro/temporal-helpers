@@ -7,6 +7,13 @@ interface FormatToken {
   fn: (date: ZonedDateTime) => string;
 }
 
+function ordinalDaySuffix(day: number): string {
+  if (day % 100 >= 11 && day % 100 <= 13) {
+    return "th";
+  }
+  return ["th", "st", "nd", "rd"][day % 10] || "th";
+}
+
 const tokens: FormatToken[] = [
   { char: "yyyy", fn: (d) => String(d.year).padStart(4, "0") },
   { char: "yy", fn: (d) => String(d.year).slice(-2) },
@@ -16,6 +23,7 @@ const tokens: FormatToken[] = [
   { char: "MM", fn: (d) => String(d.month).padStart(2, "0") },
   { char: "M", fn: (d) => String(d.month) },
   { char: "dd", fn: (d) => String(d.day).padStart(2, "0") },
+  { char: "do", fn: (d) => String(d.day) + ordinalDaySuffix(d.day) },
   { char: "d", fn: (d) => String(d.day) },
   { char: "HH", fn: (d) => String(d.hour).padStart(2, "0") },
   { char: "H", fn: (d) => String(d.hour) },
@@ -32,17 +40,22 @@ const tokens: FormatToken[] = [
   { char: "X", fn: (d) => String(Math.floor(d.epochMilliseconds / 1000)) },
 ];
 
-function escapeString(str: string): string {
-  return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
-}
+// Longest tokens first so e.g. "yyyy" wins over "yy" and "do" over "d" in the
+// combined alternation.
+const tokenPattern = tokens
+  .slice()
+  .sort((a, b) => b.char.length - a.char.length)
+  .map((token) => token.char)
+  .join("|");
+
+const tokenRegex = new RegExp(tokenPattern, "g");
 
 export function format(date: ZonedDateTime, formatStr: string): string {
-  let result = formatStr;
-
-  for (const token of tokens) {
-    const regex = new RegExp(escapeString(token.char), "g");
-    result = result.replace(regex, token.fn(date));
-  }
-
-  return result;
+  // One combined pass: replacing token-by-token over the accumulated result
+  // re-renders token characters inside already-rendered text ("August" feeds
+  // the A and s passes and comes out "AMugu0t").
+  return formatStr.replace(tokenRegex, (matched) => {
+    const token = tokens.find((candidate) => candidate.char === matched);
+    return token ? token.fn(date) : matched;
+  });
 }
