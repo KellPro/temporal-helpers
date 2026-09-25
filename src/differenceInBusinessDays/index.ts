@@ -8,7 +8,7 @@ export interface DifferenceInBusinessDaysOptions {
 }
 
 function isWeekend(date: ZonedDateTime): boolean {
-  return date.dayOfWeek === 0 || date.dayOfWeek === 6;
+  return date.dayOfWeek === 6 || date.dayOfWeek === 7;
 }
 
 export function differenceInBusinessDays(
@@ -24,7 +24,7 @@ export function differenceInBusinessDays(
   let businessDays = 0;
   let current = start;
   
-  if (totalDays >= 0) {
+  if (totalDays > 0) {
     for (let i = 0; i <= totalDays; i++) {
       if (!isWeekend(current)) {
         businessDays++;
@@ -32,7 +32,7 @@ export function differenceInBusinessDays(
       current = current.add({ days: 1 });
     }
     businessDays -= 1;
-  } else {
+  } else if (totalDays < 0) {
     for (let i = 0; i >= totalDays; i--) {
       if (!isWeekend(current)) {
         businessDays--;
