@@ -10,9 +10,10 @@ describe("previousFriday", () => {
     expect(result.day).toBe(5);
   });
 
-  it("returns the same day if already Friday", () => {
+  it("goes back 7 days when already Friday", () => {
     const date = Temporal.ZonedDateTime.from("2024-04-05T12:00:00[America/New_York]");
     const result = previousFriday(date);
-    expect(result.day).toBe(5);
+    expect(result.dayOfWeek).toBe(5);
+    expect(result.day).toBe(29);
   });
 });
