@@ -11,6 +11,9 @@ describe("endOfHour", () => {
     const result = endOfHour(date);
     expect(result.minute).toBe(59);
     expect(result.second).toBe(59);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 
   it("completes sub-second precision", () => {

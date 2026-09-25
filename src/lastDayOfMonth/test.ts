@@ -10,6 +10,9 @@ describe("lastDayOfMonth", () => {
   it("returns last day of month", () => {
     const result = lastDayOfMonth(date);
     expect(result.day).toBe(31);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 
   it("completes sub-second precision", () => {

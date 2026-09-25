@@ -10,6 +10,9 @@ describe("endOfISOWeek", () => {
   it("returns end of ISO week", () => {
     const result = endOfISOWeek(date);
     expect(result.day).toBe(14);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 
   it("completes sub-second precision", () => {

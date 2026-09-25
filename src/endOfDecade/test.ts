@@ -12,6 +12,9 @@ describe("endOfDecade", () => {
     expect(result.year).toBe(2029);
     expect(result.month).toBe(12);
     expect(result.day).toBe(31);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 
   it("completes sub-second precision", () => {
