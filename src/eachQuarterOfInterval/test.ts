@@ -23,4 +23,17 @@ describe("eachQuarterOfInterval", () => {
     expect(result.length).toBe(1);
     expect(result[0].month).toBe(1);
   });
+
+  it("strips sub-second residue from interval bounds", () => {
+    const result = eachQuarterOfInterval({
+      start: ZonedDateTime.from("2024-07-10T12:34:56.789123456[Europe/Paris]"),
+      end: ZonedDateTime.from("2024-07-12T08:09:10.111222333[Europe/Paris]"),
+    });
+    expect(result.length).toBeGreaterThan(0);
+    for (const value of result) {
+      expect(value.millisecond).toBe(0);
+      expect(value.microsecond).toBe(0);
+      expect(value.nanosecond).toBe(0);
+    }
+  });
 });

@@ -11,10 +11,10 @@ export function eachQuarterOfInterval(interval: Interval): ZonedDateTime[] {
   const quarters: ZonedDateTime[] = [];
   
   const startQuarter = Math.ceil(interval.start.month / 3);
-  let current = interval.start.with({ month: startQuarter, day: 1, hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  let current = interval.start.with({ month: startQuarter, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   const endQuarter = Math.ceil(interval.end.month / 3);
-  const end = interval.end.with({ month: endQuarter, day: 1, hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  const end = interval.end.with({ month: endQuarter, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   while (current.epochMilliseconds <= end.epochMilliseconds) {
     quarters.push(current);

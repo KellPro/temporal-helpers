@@ -16,5 +16,5 @@ export function roundToNearestHours(date: ZonedDateTime, options?: RoundToNeares
   const totalMinutes = hour * 60 + minute + (second + nanosecond / 1e9) / 60;
   const nearestHour = Math[roundingMethod](totalMinutes / 60);
   
-  return date.with({ hour: nearestHour, minute: 0, second: 0, nanosecond: 0 });
+  return date.with({ hour: nearestHour, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
 }

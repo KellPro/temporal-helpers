@@ -3,6 +3,6 @@ import { isSameQuarter } from "../isSameQuarter/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
-export function isThisQuarter(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO()): boolean {
+export function isThisQuarter(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO(date.timeZoneId)): boolean {
   return isSameQuarter(date, referenceDate);
 }

@@ -10,5 +10,5 @@ export function endOfWeek(date: ZonedDateTime, options?: EndOfWeekOptions): Zone
   const weekStartsOn = options?.weekStartsOn ?? 0;
   const dayOfWeek = date.dayOfWeek;
   const diff = (weekStartsOn - dayOfWeek + 7) % 7;
-  return date.add({ days: diff }).with({ hour: 23, minute: 59, second: 59, nanosecond: 999999999 });
+  return date.add({ days: diff }).with({ hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999, nanosecond: 999 });
 }

@@ -21,12 +21,12 @@ export function eachWeekOfInterval(
   const startDayOfWeek = interval.start.dayOfWeek;
   const startDiff = (startDayOfWeek - weekStartsOn + 7) % 7;
   let current = interval.start.subtract({ days: startDiff });
-  current = current.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  current = current.with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   const endDayOfWeek = interval.end.dayOfWeek;
   const endDiff = (weekStartsOn - endDayOfWeek + 7) % 7;
   const end = interval.end.add({ days: endDiff });
-  const normalizedEnd = end.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  const normalizedEnd = end.with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   while (current.epochMilliseconds <= normalizedEnd.epochMilliseconds) {
     weeks.push(current);

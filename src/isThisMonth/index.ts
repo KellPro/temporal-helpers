@@ -3,6 +3,6 @@ import { isSameMonth } from "../isSameMonth/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
-export function isThisMonth(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO()): boolean {
+export function isThisMonth(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO(date.timeZoneId)): boolean {
   return isSameMonth(date, referenceDate);
 }

@@ -9,8 +9,8 @@ export interface Interval {
 
 export function eachWeekendOfInterval(interval: Interval): ZonedDateTime[] {
   const weekends: ZonedDateTime[] = [];
-  let current = interval.start.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  const end = interval.end.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  let current = interval.start.with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
+  const end = interval.end.with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   while (current.epochMilliseconds <= end.epochMilliseconds) {
     if (current.dayOfWeek === 0 || current.dayOfWeek === 6) {

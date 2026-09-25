@@ -12,4 +12,12 @@ describe("startOfMonth", () => {
     expect(result.month).toBe(7);
     expect(result.day).toBe(1);
   });
+
+  it("strips sub-second residue", () => {
+    const date = ZonedDateTime.from("2024-07-10T12:34:56.789123456[Europe/Paris]");
+    const result = startOfMonth(date);
+    expect(result.millisecond).toBe(0);
+    expect(result.microsecond).toBe(0);
+    expect(result.nanosecond).toBe(0);
+  });
 });

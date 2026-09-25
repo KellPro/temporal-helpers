@@ -5,5 +5,5 @@ type ZonedDateTime = Temporal.ZonedDateTime;
 export function endOfISOWeek(date: ZonedDateTime): ZonedDateTime {
   const dayOfWeek = date.dayOfWeek;
   const diff = 7 - dayOfWeek;
-  return date.add({ days: diff }).with({ hour: 23, minute: 59, second: 59, nanosecond: 999999999 });
+  return date.add({ days: diff }).with({ hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999, nanosecond: 999 });
 }

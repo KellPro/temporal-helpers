@@ -1,5 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { getRoundingMethod } from "../_lib/getRoundingMethod/index.js";
+import { compareWallClock } from "../_lib/compareWallClock/index.js";
+import { differenceInCalendarYears } from "../differenceInCalendarYears/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
@@ -12,15 +14,16 @@ export function differenceInYears(
   earlierDate: ZonedDateTime,
   options?: DifferenceInYearsOptions,
 ): number {
-  const yearDiff = laterDate.year - earlierDate.year;
-  
-  const monthDiff = laterDate.month - earlierDate.month;
-  const dayDiff = laterDate.day - earlierDate.day;
-  
-  let diff = yearDiff;
-  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-    diff -= 1;
-  }
-  
-  return getRoundingMethod(options?.roundingMethod)(diff);
+  const sign = compareWallClock(laterDate, earlierDate);
+  const diff = Math.abs(differenceInCalendarYears(laterDate, earlierDate));
+
+  if (diff === 0) return 0;
+
+  // The last year is full when the earlier date's anniversary — with a leap
+  // day clamped into the target year by Temporal — reaches the later date
+  const anniversary = earlierDate.add({ years: sign * diff });
+  const isLastYearNotFull = compareWallClock(anniversary, laterDate) === sign;
+
+  const result = isLastYearNotFull ? sign * (diff - 1) : sign * diff;
+  return getRoundingMethod(options?.roundingMethod)(result);
 }
