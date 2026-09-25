@@ -8,14 +8,18 @@ export interface Interval {
 }
 
 export function eachQuarterOfInterval(interval: Interval): ZonedDateTime[] {
+  if (interval.start.epochMilliseconds > interval.end.epochMilliseconds) {
+    throw new RangeError("End date must be after start date");
+  }
+
   const quarters: ZonedDateTime[] = [];
-  
-  const startQuarter = Math.ceil(interval.start.month / 3);
-  let current = interval.start.with({ month: startQuarter, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
-  
-  const endQuarter = Math.ceil(interval.end.month / 3);
-  const end = interval.end.with({ month: endQuarter, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
-  
+
+  const startFirstMonth = interval.start.month - ((interval.start.month - 1) % 3);
+  let current = interval.start.with({ month: startFirstMonth, day: 1 }).startOfDay();
+
+  const endFirstMonth = interval.end.month - ((interval.end.month - 1) % 3);
+  const end = interval.end.with({ month: endFirstMonth, day: 1 }).startOfDay();
+
   while (current.epochMilliseconds <= end.epochMilliseconds) {
     quarters.push(current);
     current = current.add({ months: 3 });
