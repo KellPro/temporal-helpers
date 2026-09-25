@@ -16,4 +16,16 @@ describe("eachYearOfInterval", () => {
     expect(result[2].year).toBe(2022);
     expect(result[3].year).toBe(2023);
   });
+
+  it("zeroes sub-second residue from emitted boundaries", () => {
+    const subSecondStart = ZonedDateTime.from("2020-03-15T10:00:00.123456789[Europe/Paris]");
+    const subSecondEnd = ZonedDateTime.from("2022-07-20T10:00:00.123456789[Europe/Paris]");
+    const result = eachYearOfInterval({ start: subSecondStart, end: subSecondEnd });
+    expect(result.length).toBe(3);
+    for (const boundary of result) {
+      expect(boundary.millisecond).toBe(0);
+      expect(boundary.microsecond).toBe(0);
+      expect(boundary.nanosecond).toBe(0);
+    }
+  });
 });

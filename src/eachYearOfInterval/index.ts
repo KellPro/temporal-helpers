@@ -9,8 +9,8 @@ export interface Interval {
 
 export function eachYearOfInterval(interval: Interval): ZonedDateTime[] {
   const years: ZonedDateTime[] = [];
-  let current = interval.start.with({ month: 1, day: 1, hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  const end = interval.end.with({ month: 1, day: 1, hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  let current = interval.start.with({ month: 1, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
+  const end = interval.end.with({ month: 1, day: 1, hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   while (current.epochMilliseconds <= end.epochMilliseconds) {
     years.push(current);

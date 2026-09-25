@@ -23,4 +23,18 @@ describe("eachMonthOfInterval", () => {
     expect(result.length).toBe(1);
     expect(result[0].month).toBe(3);
   });
+
+  it("zeroes sub-second residue from emitted boundaries", () => {
+    const interval = {
+      start: ZonedDateTime.from("2024-01-15T10:00:00.123456789[Europe/Paris]"),
+      end: ZonedDateTime.from("2024-03-20T10:00:00.123456789[Europe/Paris]"),
+    };
+    const result = eachMonthOfInterval(interval);
+    expect(result.length).toBe(3);
+    for (const boundary of result) {
+      expect(boundary.millisecond).toBe(0);
+      expect(boundary.microsecond).toBe(0);
+      expect(boundary.nanosecond).toBe(0);
+    }
+  });
 });
