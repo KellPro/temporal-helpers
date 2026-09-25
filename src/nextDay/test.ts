@@ -45,17 +45,43 @@ describe("Utility Functions", () => {
   const saturday = ZonedDateTime.from("2024-07-06T12:00:00[Europe/Paris]");
   const sunday = ZonedDateTime.from("2024-07-07T12:00:00[Europe/Paris]");
   const monday = ZonedDateTime.from("2024-07-08T12:00:00[Europe/Paris]");
+  const tuesday = ZonedDateTime.from("2024-07-09T12:00:00[Europe/Paris]");
+  const thursday = ZonedDateTime.from("2024-07-11T12:00:00[Europe/Paris]");
+  const newYorkFriday = ZonedDateTime.from("2024-07-05T12:00:00[America/New_York]");
 
   describe("nextDay", () => {
     it("returns next day", () => {
       const result = nextDay(wednesday, 4); // Thursday
       expect(result.day).toBe(11);
     });
+    it("advances 7 days when input is on the target weekday", () => {
+      const result = nextDay(sunday, 0); // Sunday
+      expect(result.day).toBe(14);
+      expect(result.dayOfWeek).toBe(7);
+    });
+    it("returns next day when input is the day after the target", () => {
+      const result = nextDay(saturday, 0); // Sunday
+      expect(result.day).toBe(7);
+    });
+    it("treats 0 as Sunday per date-fns 0-6 convention", () => {
+      const result = nextDay(friday, 0); // Sunday
+      expect(result.day).toBe(7);
+      expect(result.dayOfWeek).toBe(7);
+    });
+    it("keeps the zone for non-UTC inputs", () => {
+      const result = nextDay(newYorkFriday, 0); // Sunday
+      expect(result.day).toBe(7);
+      expect(result.timeZoneId).toBe("America/New_York");
+    });
   });
 
   describe("nextMonday", () => {
     it("returns next Monday", () => {
       const result = nextMonday(wednesday);
+      expect(result.day).toBe(15);
+    });
+    it("advances 7 days when input is Monday", () => {
+      const result = nextMonday(monday);
       expect(result.day).toBe(15);
     });
   });
@@ -65,12 +91,20 @@ describe("Utility Functions", () => {
       const result = nextTuesday(wednesday);
       expect(result.day).toBe(16);
     });
+    it("advances 7 days when input is Tuesday", () => {
+      const result = nextTuesday(tuesday);
+      expect(result.day).toBe(16);
+    });
   });
 
   describe("nextWednesday", () => {
     it("returns next Wednesday", () => {
       const result = nextWednesday(friday);
       expect(result.day).toBe(10);
+    });
+    it("advances 7 days when input is Wednesday", () => {
+      const result = nextWednesday(wednesday);
+      expect(result.day).toBe(17);
     });
   });
 
@@ -79,11 +113,19 @@ describe("Utility Functions", () => {
       const result = nextThursday(wednesday);
       expect(result.day).toBe(11);
     });
+    it("advances 7 days when input is Thursday", () => {
+      const result = nextThursday(thursday);
+      expect(result.day).toBe(18);
+    });
   });
 
   describe("nextFriday", () => {
     it("returns next Friday", () => {
       const result = nextFriday(wednesday);
+      expect(result.day).toBe(12);
+    });
+    it("advances 7 days when input is Friday", () => {
+      const result = nextFriday(friday);
       expect(result.day).toBe(12);
     });
   });
@@ -93,12 +135,29 @@ describe("Utility Functions", () => {
       const result = nextSaturday(wednesday);
       expect(result.day).toBe(13);
     });
+    it("advances 7 days when input is Saturday", () => {
+      const result = nextSaturday(saturday);
+      expect(result.day).toBe(13);
+    });
+    it("returns Saturday after Friday in America/New_York", () => {
+      const result = nextSaturday(newYorkFriday);
+      expect(result.day).toBe(6);
+      expect(result.timeZoneId).toBe("America/New_York");
+    });
   });
 
   describe("nextSunday", () => {
     it("returns next Sunday", () => {
       const result = nextSunday(wednesday);
       expect(result.day).toBe(14);
+    });
+    it("advances 7 days when input is Sunday", () => {
+      const result = nextSunday(sunday);
+      expect(result.day).toBe(14);
+    });
+    it("returns Sunday for the day after the target", () => {
+      const result = nextSunday(saturday);
+      expect(result.day).toBe(7);
     });
   });
 
@@ -107,12 +166,25 @@ describe("Utility Functions", () => {
       const result = previousDay(wednesday, 2); // Tuesday
       expect(result.day).toBe(9);
     });
+    it("goes back 7 days when input is on the target weekday", () => {
+      const result = previousDay(sunday, 0); // Sunday
+      expect(result.day).toBe(30);
+      expect(result.dayOfWeek).toBe(7);
+    });
+    it("returns previous day when input is the day before the target", () => {
+      const result = previousDay(sunday, 6); // Saturday
+      expect(result.day).toBe(6);
+    });
   });
 
   describe("previousMonday", () => {
     it("returns previous Monday", () => {
       const result = previousMonday(wednesday);
       expect(result.day).toBe(8);
+    });
+    it("goes back 7 days when input is Monday", () => {
+      const result = previousMonday(monday);
+      expect(result.day).toBe(1);
     });
   });
 
@@ -121,18 +193,26 @@ describe("Utility Functions", () => {
       const result = previousTuesday(wednesday);
       expect(result.day).toBe(9);
     });
+    it("goes back 7 days when input is Tuesday", () => {
+      const result = previousTuesday(tuesday);
+      expect(result.day).toBe(2);
+    });
   });
 
   describe("previousWednesday", () => {
-    it("returns previous Wednesday", () => {
+    it("goes back 7 days when input is Wednesday", () => {
       const result = previousWednesday(wednesday);
-      expect(result.day).toBe(10);
+      expect(result.day).toBe(3);
     });
   });
 
   describe("previousThursday", () => {
     it("returns previous Thursday", () => {
       const result = previousThursday(wednesday);
+      expect(result.day).toBe(4);
+    });
+    it("goes back 7 days when input is Thursday", () => {
+      const result = previousThursday(thursday);
       expect(result.day).toBe(4);
     });
   });
@@ -142,6 +222,10 @@ describe("Utility Functions", () => {
       const result = previousFriday(wednesday);
       expect(result.day).toBe(5);
     });
+    it("goes back 7 days when input is Friday", () => {
+      const result = previousFriday(friday);
+      expect(result.day).toBe(28);
+    });
   });
 
   describe("previousSaturday", () => {
@@ -149,12 +233,31 @@ describe("Utility Functions", () => {
       const result = previousSaturday(wednesday);
       expect(result.day).toBe(6);
     });
+    it("goes back 7 days when input is Saturday", () => {
+      const result = previousSaturday(saturday);
+      expect(result.day).toBe(29);
+      expect(result.dayOfWeek).toBe(6);
+    });
+    it("returns Saturday before Friday in America/New_York", () => {
+      const result = previousSaturday(newYorkFriday);
+      expect(result.day).toBe(29);
+      expect(result.timeZoneId).toBe("America/New_York");
+    });
   });
 
   describe("previousSunday", () => {
     it("returns previous Sunday", () => {
       const result = previousSunday(wednesday);
       expect(result.day).toBe(7);
+    });
+    it("goes back 7 days when input is Sunday", () => {
+      const result = previousSunday(sunday);
+      expect(result.day).toBe(30);
+    });
+    it("resolves 0 to Sunday, not Monday, from Friday", () => {
+      const result = previousSunday(friday);
+      expect(result.day).toBe(30);
+      expect(result.dayOfWeek).toBe(7);
     });
   });
 

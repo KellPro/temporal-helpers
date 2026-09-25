@@ -1,5 +1,5 @@
 import { nextDay } from "../nextDay/index.js";
 
 export function nextSunday(date: Parameters<typeof nextDay>[0]): ReturnType<typeof nextDay> {
-  return nextDay(date, 7);
+  return nextDay(date, 0);
 }
