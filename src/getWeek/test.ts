@@ -11,4 +11,9 @@ describe("getWeek", () => {
     expect(result).toBeGreaterThan(0);
     expect(result).toBeLessThanOrEqual(53);
   });
+
+  it("returns 1 for a December date in the week that contains next January 1", () => {
+    expect(getWeek(ZonedDateTime.from("2024-12-30T12:00:00[UTC]"))).toBe(1);
+    expect(getWeek(ZonedDateTime.from("2023-12-31T12:00:00[UTC]"))).toBe(1);
+  });
 });

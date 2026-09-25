@@ -57,6 +57,19 @@ describe("eachQuarterOfInterval", () => {
     ).toThrow(RangeError);
   });
 
+  it("includes the end quarter when the zones differ", () => {
+    // Jan 1 2025 midnight in New York is later than Jan 1 midnight in
+    // Auckland, but the interval end is Feb 1 Auckland, so Q1 still overlaps.
+    const result = eachQuarterOfInterval({
+      start: ZonedDateTime.from("2024-11-15T10:00:00[America/New_York]"),
+      end: ZonedDateTime.from("2025-02-01T10:00:00[Pacific/Auckland]"),
+    });
+    expect(result.map((day) => day.toString())).toEqual([
+      "2024-10-01T00:00:00-04:00[America/New_York]",
+      "2025-01-01T00:00:00-05:00[America/New_York]",
+    ]);
+  });
+
   it("handles an interval crossing a year boundary", () => {
     const result = eachQuarterOfInterval({
       start: ZonedDateTime.from("2024-11-15T12:00:00[Europe/Paris]"),

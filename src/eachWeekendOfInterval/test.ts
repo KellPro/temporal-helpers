@@ -11,7 +11,12 @@ describe("eachWeekendOfInterval", () => {
       end: ZonedDateTime.from("2024-07-07T10:00:00[Europe/Paris]"),
     };
     const result = eachWeekendOfInterval(interval);
-    expect(result.length).toBe(1);
+    // Sat Jul 6 and Sun Jul 7. Sunday is Temporal dayOfWeek 7.
+    expect(result.map((day) => day.toString())).toEqual([
+      "2024-07-06T00:00:00+02:00[Europe/Paris]",
+      "2024-07-07T00:00:00+02:00[Europe/Paris]",
+    ]);
+    expect(result.map((day) => day.dayOfWeek)).toEqual([6, 7]);
   });
 
   it("returns empty array when no weekends in interval", () => {

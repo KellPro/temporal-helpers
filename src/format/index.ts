@@ -1,4 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
+import { getWeek } from "../getWeek/index.js";
+import { getWeekYear } from "../getWeekYear/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
@@ -25,19 +27,23 @@ const WEEKDAYS_LONG = [
 
 const WEEKDAYS_NARROW = ["M", "T", "W", "T", "F", "S", "S"];
 
+// date-fns en-US "short" width, used by EEEEEE. Indexed Monday=0 … Sunday=6.
+const WEEKDAYS_PAIR = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+
 // One combined pass: substitution output is never re-scanned.
 // Alternatives are order-sensitive (first match wins at each position):
-//   1. ([dMQwY]o)        ordinal pair (do, Mo, Qo, wo, Yo) — must beat the
-//                        letter run, or the "o" renders as day-of-year
+//   1. ([dDMQwY]o)       ordinal pair (do, Do, Mo, Qo, wo, Yo) — must beat the
+//                        letter run, or Do splits into D + a lone o
 //   2. ('(?:''|[^'])*')  quoted literal; '' inside is an escaped quote
 //   3. ([a-zA-Z])\3*     run of one identical letter; match.length picks
 //                        the token width (MMMM -> length 4)
 //   4. ([\s\S])          any other single character is literal; also where
 //                        an unterminated ' or unknown letter surfaces
-const MASK_PATTERN = /([dMQwY]o)|('(?:''|[^'])*')|([a-zA-Z])\3*|([\s\S])/g;
+const MASK_PATTERN = /([dDMQwY]o)|('(?:''|[^'])*')|([a-zA-Z])\3*|([\s\S])/g;
 
 function pad(value: number, length: number): string {
-  return String(value).padStart(length, "0");
+  const sign = value < 0 ? "-" : "";
+  return sign + String(Math.abs(value)).padStart(length, "0");
 }
 
 function modulo(value: number, divisor: number): number {
@@ -57,44 +63,6 @@ function ordinalSuffix(value: number): string {
 
 function ordinal(value: number): string {
   return `${value}${ordinalSuffix(value)}`;
-}
-
-function daysFromCivil(year: number, month: number, day: number): number {
-  const adjustedYear = year - (month <= 2 ? 1 : 0);
-  const era = Math.floor(adjustedYear / 400);
-  const yearOfEra = adjustedYear - era * 400;
-  const dayOfYear =
-    Math.floor((153 * (month + (month > 2 ? -3 : 9)) + 2) / 5) + day - 1;
-  const dayOfEra =
-    yearOfEra * 365 +
-    Math.floor(yearOfEra / 4) -
-    Math.floor(yearOfEra / 100) +
-    dayOfYear;
-  return era * 146097 + dayOfEra - 719468;
-}
-
-function weekdayFromCivilDay(civilDay: number): number {
-  return modulo(civilDay + 3, 7) + 1;
-}
-
-function sundayStartCivilDay(year: number, month: number, day: number): number {
-  const civilDay = daysFromCivil(year, month, day);
-  return civilDay - (weekdayFromCivilDay(civilDay) % 7);
-}
-
-function weekYearOf(date: ZonedDateTime): number {
-  const year = date.year;
-  const civilDay = daysFromCivil(year, date.month, date.day);
-  if (civilDay < sundayStartCivilDay(year, 1, 1)) return year - 1;
-  if (civilDay >= sundayStartCivilDay(year + 1, 1, 1)) return year + 1;
-  return year;
-}
-
-function weekNumberOf(date: ZonedDateTime): number {
-  const weekYear = weekYearOf(date);
-  const civilDay = daysFromCivil(date.year, date.month, date.day);
-  const weekOneStart = sundayStartCivilDay(weekYear, 1, 1);
-  return Math.floor((civilDay - weekOneStart) / 7) + 1;
 }
 
 function isAsciiLetter(character: string): boolean {
@@ -118,95 +86,105 @@ function renderMonth(date: ZonedDateTime, length: number): string {
   if (length === 1) return String(date.month);
   if (length === 2) return pad(date.month, 2);
   if (length === 3) return MONTHS_SHORT[date.month - 1];
-  if (length === 4) return MONTHS_LONG[date.month - 1];
-  return MONTHS_NARROW[date.month - 1];
+  if (length === 5) return MONTHS_NARROW[date.month - 1];
+  return MONTHS_LONG[date.month - 1];
 }
 
 function renderWeekday(date: ZonedDateTime, length: number): string {
-  if (length === 4) return WEEKDAYS_LONG[date.dayOfWeek - 1];
-  if (length >= 5) return WEEKDAYS_NARROW[date.dayOfWeek - 1];
-  return WEEKDAYS_SHORT[date.dayOfWeek - 1];
+  const index = date.dayOfWeek - 1;
+  if (length <= 3) return WEEKDAYS_SHORT[index];
+  if (length === 5) return WEEKDAYS_NARROW[index];
+  if (length === 6) return WEEKDAYS_PAIR[index];
+  return WEEKDAYS_LONG[index];
 }
 
 function renderQuarter(date: ZonedDateTime, length: number): string {
   const quarter = Math.ceil(date.month / 3);
-  if (length === 1) return String(quarter);
+  if (length === 1 || length === 5) return String(quarter);
   if (length === 2) return pad(quarter, 2);
   if (length === 3) return `Q${quarter}`;
-  if (length === 4) return `${quarter}${ordinalSuffix(quarter)} quarter`;
-  return String(quarter);
+  return `${quarter}${ordinalSuffix(quarter)} quarter`;
 }
 
 function renderDayPeriod(date: ZonedDateTime, length: number): string {
   const isAM = date.hour < 12;
-  if (length <= 3) return isAM ? "AM" : "PM";
-  if (length === 4) return isAM ? "a.m." : "p.m.";
-  return isAM ? "a" : "p";
+  if (length <= 2) return isAM ? "AM" : "PM";
+  if (length === 3) return isAM ? "am" : "pm";
+  if (length === 5) return isAM ? "a" : "p";
+  return isAM ? "a.m." : "p.m.";
 }
 
 function renderEra(date: ZonedDateTime, length: number): string {
   const isAD = date.year > 0;
   if (length <= 3) return isAD ? "AD" : "BC";
-  if (length === 4) return isAD ? "Anno Domini" : "Before Christ";
-  return isAD ? "A" : "B";
+  if (length === 5) return isAD ? "A" : "B";
+  return isAD ? "Anno Domini" : "Before Christ";
 }
 
-function renderOffset(offset: string, length: number, zeroAsZ: boolean): string {
-  if (offset === "+00:00" || offset === "-00:00") {
-    if (zeroAsZ) return "Z";
-    if (length === 1) return "+00";
-    if (length === 2) return "+0000";
-    return "+00:00";
-  }
+function renderISOOffset(offset: string, length: number): string {
   const sign = offset[0];
   const hours = offset.slice(1, 3);
   const minutes = offset.slice(4, 6);
-  if (length === 1 && minutes === "00") return `${sign}${hours}`;
-  if (length <= 2) return `${sign}${hours}${minutes}`;
+  if (length === 1) {
+    return minutes === "00" ? `${sign}${hours}` : `${sign}${hours}${minutes}`;
+  }
+  if (length === 2 || length === 4) return `${sign}${hours}${minutes}`;
   return `${sign}${hours}:${minutes}`;
+}
+
+function renderOffset(offset: string, length: number, zeroAsZ: boolean): string {
+  const isZero = offset === "+00:00" || offset === "-00:00";
+  if (isZero && zeroAsZ) return "Z";
+  return renderISOOffset(isZero ? "+00:00" : offset, length);
+}
+
+function renderGMTOffset(offset: string, length: number): string {
+  const sign = offset.startsWith("-") ? "-" : "+";
+  const hours = Number(offset.slice(1, 3));
+  const minutes = Number(offset.slice(4, 6));
+  if (length <= 3) {
+    if (minutes === 0) return `GMT${sign}${hours}`;
+    return `GMT${sign}${hours}:${pad(minutes, 2)}`;
+  }
+  return `GMT${sign}${pad(hours, 2)}:${pad(minutes, 2)}`;
 }
 
 type TokenRenderer = (date: ZonedDateTime, length: number) => string;
 
 const RENDERERS: Record<string, TokenRenderer> = {
   y: (date, length) => renderYearLike(date.year, length),
-  Y: (date, length) => renderYearLike(weekYearOf(date), length),
+  Y: (date, length) => renderYearLike(getWeekYear(date), length),
   L: renderMonth,
   M: renderMonth,
-  d: (date, length) => (length === 1 ? String(date.day) : pad(date.day, 2)),
+  d: (date, length) => pad(date.day, length),
+  D: (date, length) => pad(date.dayOfYear, length),
   E: renderWeekday,
   Q: renderQuarter,
   q: renderQuarter,
-  w: (date, length) => {
-    const week = weekNumberOf(date);
-    return length === 1 ? String(week) : pad(week, 2);
-  },
-  h: (date, length) => {
-    const hour12 = date.hour % 12 || 12;
-    return length === 1 ? String(hour12) : pad(hour12, 2);
-  },
-  H: (date, length) => (length === 1 ? String(date.hour) : pad(date.hour, 2)),
-  m: (date, length) =>
-    length === 1 ? String(date.minute) : pad(date.minute, 2),
-  s: (date, length) =>
-    length === 1 ? String(date.second) : pad(date.second, 2),
+  w: (date, length) => pad(getWeek(date), length),
+  h: (date, length) => pad(date.hour % 12 || 12, length),
+  H: (date, length) => pad(date.hour, length),
+  m: (date, length) => pad(date.minute, length),
+  s: (date, length) => pad(date.second, length),
   S: (date, length) =>
-    pad(date.millisecond, 3).slice(0, Math.min(length, 3)),
+    pad(Math.trunc(date.millisecond * 10 ** (length - 3)), length),
   a: renderDayPeriod,
   G: renderEra,
-  o: (date) => ordinal(date.dayOfYear),
-  t: (date) => String(Math.floor(date.epochMilliseconds / 1000)),
-  T: (date) => String(date.epochMilliseconds),
+  t: (date, length) => pad(Math.trunc(date.epochMilliseconds / 1000), length),
+  T: (date, length) => pad(date.epochMilliseconds, length),
   X: (date, length) => renderOffset(date.offset, length, true),
   x: (date, length) => renderOffset(date.offset, length, false),
+  z: (date, length) => renderGMTOffset(date.offset, length),
+  O: (date, length) => renderGMTOffset(date.offset, length),
 };
 
 const ORDINAL_RENDERERS: Record<string, (date: ZonedDateTime) => string> = {
   d: (date) => ordinal(date.day),
+  D: (date) => ordinal(date.dayOfYear),
   M: (date) => ordinal(date.month),
   Q: (date) => ordinal(Math.ceil(date.month / 3)),
-  w: (date) => ordinal(weekNumberOf(date)),
-  Y: (date) => ordinal(weekYearOf(date)),
+  w: (date) => ordinal(getWeek(date)),
+  Y: (date) => ordinal(getWeekYear(date)),
 };
 
 export function format(date: ZonedDateTime, mask: string): string {

@@ -1,5 +1,7 @@
 import { Temporal } from "@js-temporal/polyfill";
+import { differenceInCalendarDays } from "../differenceInCalendarDays/index.js";
 import { startOfWeek } from "../startOfWeek/index.js";
+import { startOfWeekYear } from "../startOfWeekYear/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
@@ -9,8 +11,6 @@ export interface GetWeekOptions {
 }
 
 export function getWeek(date: ZonedDateTime, options?: GetWeekOptions): number {
-  const yearStart = date.with({ month: 1, day: 1 });
-  const start = startOfWeek(yearStart, options);
-  const diff = date.since(start, { largestUnit: "day" });
-  return Math.floor(diff.days / 7) + 1;
+  const days = differenceInCalendarDays(startOfWeek(date, options), startOfWeekYear(date, options));
+  return Math.round(days / 7) + 1;
 }

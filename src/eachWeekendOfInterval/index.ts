@@ -13,7 +13,7 @@ export function eachWeekendOfInterval(interval: Interval): ZonedDateTime[] {
   const end = interval.end.with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
   
   while (current.epochMilliseconds <= end.epochMilliseconds) {
-    if (current.dayOfWeek === 0 || current.dayOfWeek === 6) {
+    if (current.dayOfWeek === 6 || current.dayOfWeek === 7) {
       weekends.push(current);
     }
     current = current.add({ days: 1 });

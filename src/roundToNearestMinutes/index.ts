@@ -6,14 +6,17 @@ export interface RoundToNearestMinutesOptions {
   roundingMethod?: "ceil" | "floor" | "round" | "trunc";
 }
 
+const ROUNDING_MODES = {
+  ceil: "ceil",
+  floor: "floor",
+  round: "halfExpand",
+  trunc: "trunc",
+} as const;
+
 export function roundToNearestMinutes(date: ZonedDateTime, options?: RoundToNearestMinutesOptions): ZonedDateTime {
   const roundingMethod = options?.roundingMethod ?? "round";
-  const minute = date.minute;
-  const second = date.second;
-  const nanosecond = date.nanosecond;
-  
-  const totalSeconds = minute * 60 + second + nanosecond / 1e9;
-  const nearestMinute = Math[roundingMethod](totalSeconds / 60);
-  
-  return date.with({ minute: nearestMinute, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
+  return date.round({
+    smallestUnit: "minute",
+    roundingMode: ROUNDING_MODES[roundingMethod],
+  });
 }

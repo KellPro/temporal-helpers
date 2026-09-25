@@ -7,7 +7,7 @@ export interface DifferenceInBusinessDaysOptions {
   roundingMethod?: "ceil" | "floor" | "round" | "trunc";
 }
 
-function isWeekend(date: ZonedDateTime): boolean {
+function isWeekend(date: Temporal.PlainDate): boolean {
   return date.dayOfWeek === 6 || date.dayOfWeek === 7;
 }
 
@@ -16,31 +16,17 @@ export function differenceInBusinessDays(
   earlierDate: ZonedDateTime,
   options?: DifferenceInBusinessDaysOptions,
 ): number {
-  const start = earlierDate.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  const end = laterDate.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  
-  const totalDays = Math.round((end.epochMilliseconds - start.epochMilliseconds) / 86400000);
-  
+  const end = laterDate.toPlainDate();
+  let current = earlierDate.toPlainDate();
+  const sign = Temporal.PlainDate.compare(end, current) < 0 ? -1 : 1;
+
   let businessDays = 0;
-  let current = start;
-  
-  if (totalDays > 0) {
-    for (let i = 0; i <= totalDays; i++) {
-      if (!isWeekend(current)) {
-        businessDays++;
-      }
-      current = current.add({ days: 1 });
+  while (Temporal.PlainDate.compare(current, end) !== 0) {
+    if (!isWeekend(current)) {
+      businessDays += sign;
     }
-    businessDays -= 1;
-  } else if (totalDays < 0) {
-    for (let i = 0; i >= totalDays; i--) {
-      if (!isWeekend(current)) {
-        businessDays--;
-      }
-      current = current.subtract({ days: 1 });
-    }
-    businessDays += 1;
+    current = current.add({ days: sign });
   }
-  
+
   return getRoundingMethod(options?.roundingMethod)(businessDays);
 }

@@ -16,4 +16,18 @@ describe("setISOWeek", () => {
     expect(result.hour).toBe(14);
     expect(result.minute).toBe(30);
   });
+
+  it("keeps a date that is already in the requested ISO week", () => {
+    // 2021-01-01 is Friday of ISO week 53 of 2020. Moving by a mis-numbered
+    // current week lands a year later.
+    const date = Temporal.ZonedDateTime.from("2021-01-01T08:15:30[America/New_York]");
+    expect(setISOWeek(date, 53).toString()).toBe(
+      "2021-01-01T08:15:30-05:00[America/New_York]",
+    );
+
+    const nextYearWeekOne = Temporal.ZonedDateTime.from("2024-12-30T12:00:00[UTC]");
+    expect(setISOWeek(nextYearWeekOne, 1).toString()).toBe(
+      "2024-12-30T12:00:00+00:00[UTC]",
+    );
+  });
 });

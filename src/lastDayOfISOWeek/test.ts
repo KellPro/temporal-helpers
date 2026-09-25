@@ -18,4 +18,13 @@ describe("lastDayOfISOWeek", () => {
     const result = lastDayOfISOWeek(date);
     expect(result.day).toBe(14);
   });
+
+  it("ends at 23:59:59.999999999 on a fall-back Sunday", () => {
+    // 2024-11-03 is the US fall-back Sunday: adding 23 exact hours to
+    // midnight lands at 22:00, an hour before the end of that local day.
+    const date = ZonedDateTime.from("2024-10-28T12:00:00[America/New_York]");
+    expect(lastDayOfISOWeek(date).toString()).toBe(
+      "2024-11-03T23:59:59.999999999-05:00[America/New_York]",
+    );
+  });
 });

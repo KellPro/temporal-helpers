@@ -21,6 +21,23 @@ describe("roundToNearestHours", () => {
     expect(result.hour).toBe(15);
   });
 
+  it("rolls 23:30 forward to the next midnight", () => {
+    const date = Temporal.ZonedDateTime.from("2024-07-10T23:30:00[Europe/Paris]");
+    expect(roundToNearestHours(date).toString()).toBe(
+      "2024-07-11T00:00:00+02:00[Europe/Paris]",
+    );
+    expect(roundToNearestHours(date, { roundingMethod: "ceil" }).toString()).toBe(
+      "2024-07-11T00:00:00+02:00[Europe/Paris]",
+    );
+  });
+
+  it("keeps 23:30 when flooring", () => {
+    const date = Temporal.ZonedDateTime.from("2024-07-10T23:30:00[Europe/Paris]");
+    expect(roundToNearestHours(date, { roundingMethod: "floor" }).toString()).toBe(
+      "2024-07-10T23:00:00+02:00[Europe/Paris]",
+    );
+  });
+
   it("strips sub-second residue", () => {
     const date = Temporal.ZonedDateTime.from("2024-07-10T12:34:56.789123456[Europe/Paris]");
     const result = roundToNearestHours(date);

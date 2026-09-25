@@ -17,10 +17,10 @@ export function eachQuarterOfInterval(interval: Interval): ZonedDateTime[] {
   const startFirstMonth = interval.start.month - ((interval.start.month - 1) % 3);
   let current = interval.start.with({ month: startFirstMonth, day: 1 }).startOfDay();
 
-  const endFirstMonth = interval.end.month - ((interval.end.month - 1) % 3);
-  const end = interval.end.with({ month: endFirstMonth, day: 1 }).startOfDay();
-
-  while (current.epochMilliseconds <= end.epochMilliseconds) {
+  // Compare against the interval end itself. Snapping the end to a quarter
+  // start in its own zone and comparing epochs drops a quarter when that
+  // midnight is earlier than the same civil date in the start zone.
+  while (current.epochMilliseconds <= interval.end.epochMilliseconds) {
     quarters.push(current);
     current = current.add({ months: 3 });
   }

@@ -18,4 +18,11 @@ describe("isSameISOWeek", () => {
   it("returns false for dates in different ISO weeks", () => {
     expect(isSameISOWeek(monday1, nextWeekMonday)).toBe(false);
   });
+
+  it("treats a January date and the previous December as the same ISO week when they share a Thursday", () => {
+    // Friday 2021-01-01 and Thursday 2020-12-31 are both ISO week 53 of 2020.
+    const january = ZonedDateTime.from("2021-01-01T00:00:00[America/New_York]");
+    const december = ZonedDateTime.from("2020-12-31T12:00:00[America/New_York]");
+    expect(isSameISOWeek(january, december)).toBe(true);
+  });
 });
