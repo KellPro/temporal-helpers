@@ -20,4 +20,12 @@ describe("startOfISOWeekYear", () => {
     expect(result.day).toBe(1);
     expect(result.month).toBe(1);
   });
+
+  it("zeros sub-second residue", () => {
+    const date = Temporal.ZonedDateTime.from("2024-07-15T10:30:45.123456789[Europe/Paris]");
+    const result = startOfISOWeekYear(date);
+    expect(result.millisecond).toBe(0);
+    expect(result.microsecond).toBe(0);
+    expect(result.nanosecond).toBe(0);
+  });
 });

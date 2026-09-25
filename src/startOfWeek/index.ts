@@ -11,5 +11,5 @@ export function startOfWeek(date: ZonedDateTime, options?: StartOfWeekOptions): 
   let dayOfWeek = date.dayOfWeek;
   if (dayOfWeek === 7) dayOfWeek = 0;
   const diff = (dayOfWeek - weekStartsOn + 7) % 7;
-  return date.subtract({ days: diff }).with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
+  return date.subtract({ days: diff }).with({ hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0, nanosecond: 0 });
 }

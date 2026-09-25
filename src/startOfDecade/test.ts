@@ -13,4 +13,12 @@ describe("startOfDecade", () => {
     expect(result.month).toBe(1);
     expect(result.day).toBe(1);
   });
+
+  it("zeros sub-second residue", () => {
+    const subSecond = ZonedDateTime.from("2024-07-10T14:30:45.123456789[Europe/Paris]");
+    const result = startOfDecade(subSecond);
+    expect(result.millisecond).toBe(0);
+    expect(result.microsecond).toBe(0);
+    expect(result.nanosecond).toBe(0);
+  });
 });
