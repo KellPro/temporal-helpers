@@ -11,5 +11,8 @@ describe("lastDayOfYear", () => {
     const result = lastDayOfYear(date);
     expect(result.month).toBe(12);
     expect(result.day).toBe(31);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 });

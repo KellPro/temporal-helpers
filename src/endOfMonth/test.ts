@@ -11,5 +11,8 @@ describe("endOfMonth", () => {
     const result = endOfMonth(date);
     expect(result.month).toBe(7);
     expect(result.day).toBe(31);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 });

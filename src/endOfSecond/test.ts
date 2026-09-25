@@ -10,5 +10,7 @@ describe("endOfSecond", () => {
   it("returns end of second", () => {
     const result = endOfSecond(date);
     expect(result.nanosecond).toBe(999);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
   });
 });

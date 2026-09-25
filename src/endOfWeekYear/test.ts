@@ -13,5 +13,8 @@ describe("endOfWeekYear", () => {
     expect(result.hour).toBe(23);
     expect(result.minute).toBe(59);
     expect(result.second).toBe(59);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 });

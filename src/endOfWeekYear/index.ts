@@ -9,6 +9,6 @@ export interface EndOfWeekYearOptions {
 
 export function endOfWeekYear(date: ZonedDateTime, options?: EndOfWeekYearOptions): ZonedDateTime {
   const year = date.year;
-  const dec31 = date.with({ year, month: 12, day: 31, hour: 23, minute: 59, second: 59, nanosecond: 999999999 });
+  const dec31 = date.with({ year, month: 12, day: 31, hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999, nanosecond: 999 });
   return endOfWeek(dec31, options);
 }

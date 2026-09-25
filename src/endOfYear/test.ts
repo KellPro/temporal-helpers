@@ -12,5 +12,8 @@ describe("endOfYear", () => {
     expect(result.year).toBe(2024);
     expect(result.month).toBe(12);
     expect(result.day).toBe(31);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 });

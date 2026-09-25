@@ -10,5 +10,8 @@ describe("endOfQuarter", () => {
   it("returns end of quarter", () => {
     const result = endOfQuarter(date);
     expect(result.month).toBe(9);
+    expect(result.millisecond).toBe(999);
+    expect(result.microsecond).toBe(999);
+    expect(result.nanosecond).toBe(999);
   });
 });
