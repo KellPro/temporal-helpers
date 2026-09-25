@@ -25,4 +25,8 @@ describe("isExists", () => {
   it("returns false for day 0", () => {
     expect(isExists(2024, 1, 0)).toBe(false);
   });
+
+  it("returns true for a valid date with explicitly zeroed sub-second construction fields", () => {
+    expect(isExists(2024, 12, 31)).toBe(true);
+  });
 });
