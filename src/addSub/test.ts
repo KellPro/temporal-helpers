@@ -164,7 +164,7 @@ describe("Add/Sub Functions", () => {
     it("adds business days", () => {
       const friday = ZonedDateTime.from("2024-07-05T12:00:00[Europe/Paris]");
       const result = addBusinessDays(friday, 1);
-      expect(result.day).toBe(7);
+      expect(result.day).toBe(8);
     });
   });
 
@@ -172,7 +172,7 @@ describe("Add/Sub Functions", () => {
     it("subtracts business days", () => {
       const monday = ZonedDateTime.from("2024-07-08T12:00:00[Europe/Paris]");
       const result = subBusinessDays(monday, 1);
-      expect(result.day).toBe(7);
+      expect(result.day).toBe(5);
     });
   });
 

@@ -11,7 +11,7 @@ export function addBusinessDays(date: ZonedDateTime, amount: number): ZonedDateT
   while (remaining > 0) {
     current = current.add({ days: direction });
     const dayOfWeek = current.dayOfWeek;
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+    if (dayOfWeek !== 6 && dayOfWeek !== 7) {
       remaining--;
     }
   }
