@@ -6,5 +6,5 @@ export function lastDayOfMonth(date: ZonedDateTime): ZonedDateTime {
   const plainDate = date.toPlainDate();
   const firstOfNextMonth = plainDate.add({ months: 1 }).with({ day: 1 });
   const lastDay = firstOfNextMonth.add({ days: -1 }).day;
-  return date.with({ day: lastDay, hour: 23, minute: 59, second: 59, nanosecond: 999999999 });
+  return date.with({ day: lastDay, hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999, nanosecond: 999 });
 }

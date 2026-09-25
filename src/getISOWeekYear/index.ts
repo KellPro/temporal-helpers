@@ -10,17 +10,10 @@ function getFirstThursdayOfYear(year: number, timeZone: string): Temporal.ZonedD
 }
 
 export function getISOWeekYear(date: ZonedDateTime): number {
-  const year = date.year;
-  const timeZone = date.timeZoneId;
-  
-  const jan1 = Temporal.ZonedDateTime.from(`${year}-01-01T00:00:00[${timeZone}]`);
-  const dayOfWeek = jan1.dayOfWeek;
-  
-  if (dayOfWeek >= 5) {
-    return year + 1;
-  }
-  
-  return year;
+  // The ISO week-numbering year of a date is the year of the Thursday of its
+  // ISO week (e.g. Mon 2024-12-30 belongs to ISO week year 2025)
+  const thursdayOfWeek = date.add({ days: 4 - date.dayOfWeek });
+  return thursdayOfWeek.year;
 }
 
 export function getISOWeek(date: ZonedDateTime): number {

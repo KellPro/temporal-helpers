@@ -13,4 +13,12 @@ describe("startOfDay", () => {
     expect(result.minute).toBe(0);
     expect(result.second).toBe(0);
   });
+
+  it("strips sub-second residue", () => {
+    const date = ZonedDateTime.from("2024-07-10T12:34:56.789123456[Europe/Paris]");
+    const result = startOfDay(date);
+    expect(result.millisecond).toBe(0);
+    expect(result.microsecond).toBe(0);
+    expect(result.nanosecond).toBe(0);
+  });
 });

@@ -211,6 +211,7 @@ export { differenceInCalendarISOWeeks } from "./differenceInCalendarISOWeeks/ind
 export { differenceInCalendarISOWeekYears } from "./differenceInCalendarISOWeekYears/index.js";
 export { differenceInISOWeekYears } from "./differenceInISOWeekYears/index.js";
 export type { DifferenceInISOWeekYearsOptions } from "./differenceInISOWeekYears/index.js";
+export { differenceInElapsedDays } from "./differenceInElapsedDays/index.js";
 
 export { eachHourOfInterval } from "./eachHourOfInterval/index.js";
 export { eachMinuteOfInterval } from "./eachMinuteOfInterval/index.js";

@@ -12,9 +12,8 @@ export function differenceInCalendarDays(
   earlierDate: ZonedDateTime,
   options?: DifferenceInCalendarDaysOptions,
 ): number {
-  const startOfLater = laterDate.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  const startOfEarlier = earlierDate.with({ hour: 0, minute: 0, second: 0, nanosecond: 0 });
-  
-  const diff = (startOfLater.epochMilliseconds - startOfEarlier.epochMilliseconds) / 86400000;
+  const diff = laterDate
+    .toPlainDate()
+    .since(earlierDate.toPlainDate(), { largestUnit: "day" }).days;
   return getRoundingMethod(options?.roundingMethod)(diff);
 }

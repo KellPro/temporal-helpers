@@ -4,7 +4,7 @@ import { isSameDay } from "../isSameDay/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
-export function isYesterday(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO()): boolean {
+export function isYesterday(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO(date.timeZoneId)): boolean {
   const yesterday = subDays(referenceDate, 1);
   return isSameDay(date, yesterday);
 }

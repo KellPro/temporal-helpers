@@ -9,12 +9,18 @@ describe("setISOWeekYear", () => {
     expect(result.year).toBe(2025);
   });
 
-  it("preserves other date components", () => {
+  it("keeps the ISO week and weekday like date-fns", () => {
     const date = Temporal.ZonedDateTime.from("2024-04-10T14:30:00[America/New_York]");
     const result = setISOWeekYear(date, 2025);
     expect(result.month).toBe(4);
-    expect(result.day).toBe(10);
-    expect(result.hour).toBe(14);
-    expect(result.minute).toBe(30);
+    // Same ISO week/weekday position, so the calendar day can shift
+    expect(result.day).toBe(9);
+  });
+
+  it("returns local midnight like date-fns (time of day is not preserved)", () => {
+    const date = Temporal.ZonedDateTime.from("2024-04-10T14:30:00[America/New_York]");
+    const result = setISOWeekYear(date, 2025);
+    expect(result.hour).toBe(0);
+    expect(result.minute).toBe(0);
   });
 });

@@ -1,8 +1,10 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { differenceInCalendarMonths } from "../differenceInCalendarMonths/index.js";
+import { getQuarter } from "../getQuarter/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
 export function differenceInCalendarQuarters(laterDate: ZonedDateTime, earlierDate: ZonedDateTime): number {
-  return Math.floor(differenceInCalendarMonths(laterDate, earlierDate) / 3);
+  const yearsDiff = laterDate.year - earlierDate.year;
+  const quartersDiff = getQuarter(laterDate) - getQuarter(earlierDate);
+  return yearsDiff * 4 + quartersDiff;
 }

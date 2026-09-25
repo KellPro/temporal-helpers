@@ -3,6 +3,6 @@ import { isSameYear } from "../isSameYear/index.js";
 
 type ZonedDateTime = Temporal.ZonedDateTime;
 
-export function isThisYear(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO()): boolean {
+export function isThisYear(date: ZonedDateTime, referenceDate: ZonedDateTime = Temporal.Now.zonedDateTimeISO(date.timeZoneId)): boolean {
   return isSameYear(date, referenceDate);
 }

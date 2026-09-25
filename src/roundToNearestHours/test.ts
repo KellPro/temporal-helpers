@@ -20,4 +20,12 @@ describe("roundToNearestHours", () => {
     const result = roundToNearestHours(date, { roundingMethod: "ceil" });
     expect(result.hour).toBe(15);
   });
+
+  it("strips sub-second residue", () => {
+    const date = Temporal.ZonedDateTime.from("2024-07-10T12:34:56.789123456[Europe/Paris]");
+    const result = roundToNearestHours(date);
+    expect(result.millisecond).toBe(0);
+    expect(result.microsecond).toBe(0);
+    expect(result.nanosecond).toBe(0);
+  });
 });

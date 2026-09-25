@@ -15,4 +15,12 @@ describe("differenceInSeconds", () => {
   it("returns negative when reversed", () => {
     expect(differenceInSeconds(date1, date2)).toBe(-60);
   });
+
+  it("returns 0, not -0, for a reversed sub-second span (date-fns #2555)", () => {
+    const a = ZonedDateTime.from("2021-07-22T06:01:28.973[Europe/Paris]");
+    const b = ZonedDateTime.from("2021-07-22T06:01:28.976[Europe/Paris]");
+    const result = differenceInSeconds(a, b);
+    expect(result).toBe(0);
+    expect(Object.is(result, 0)).toBe(true);
+  });
 });

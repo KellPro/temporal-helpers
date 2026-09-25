@@ -11,5 +11,5 @@ export function endOfMonth(date: ZonedDateTime): ZonedDateTime {
     firstOfNextMonth = plainDate.with({ month: date.month + 1, day: 1 });
   }
   const lastDayOfMonth = firstOfNextMonth.subtract({ days: 1 });
-  return date.with({ day: lastDayOfMonth.day, hour: 23, minute: 59, second: 59, nanosecond: 999999999 });
+  return date.with({ day: lastDayOfMonth.day, hour: 23, minute: 59, second: 59, millisecond: 999, microsecond: 999, nanosecond: 999 });
 }
