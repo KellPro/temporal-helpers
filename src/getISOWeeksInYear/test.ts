@@ -54,4 +54,10 @@ describe("getISOWeeksInYear", () => {
     const date = ZonedDateTime.from("2023-01-01T12:00:00[Europe/Paris]");
     expect(getISOWeeksInYear(date)).toBe(52);
   });
+
+  it("returns the same count for a sub-second input as for the same input truncated to whole seconds", () => {
+    const subSecond = ZonedDateTime.from("2020-06-15T12:00:00.123456789[Europe/Paris]");
+    const wholeSecond = ZonedDateTime.from("2020-06-15T12:00:00[Europe/Paris]");
+    expect(getISOWeeksInYear(subSecond)).toBe(getISOWeeksInYear(wholeSecond));
+  });
 });
